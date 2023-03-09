@@ -5,6 +5,25 @@ vectors = [(i,j,k) for i in directions for j in directions for k in directions i
 half_vectors = vectors[0:len(vectors)//2]
 mirror_vectors = list(reversed(vectors[len(vectors)//2 :]))
 
+#This dict allows us to know which points to check for a win condition, whenever the last move is on a given point
+pointsToCheckDic = {}
+print("precomputing")
+for x,y,z in [(x,y,z) for x in range(4) for y in range(4) for z in range(4)]:
+    p0 = (x,y,z)
+    pointsToCheckDic[p0] = []
+    for vf, vb in zip(half_vectors, mirror_vectors):
+        p1 = tuple(map(sum, zip(p0, vf)))
+        p2 = tuple(map(sum, zip(p1, vf)))
+        p3 = tuple(map(sum, zip(p2, vf))) 
+        pm1 = tuple(map(sum, zip(p0, vb)))
+        pm2 = tuple(map(sum, zip(pm1, vb)))
+        pm3 = tuple(map(sum, zip(pm2, vb))) 
+        inboundPoints = [p for p in [p0,p1,p2,p3,pm1,pm2,pm3] if all(c>=0 and c<4 for c in p)]
+        if len(inboundPoints) >= 4 :
+            pointsToCheckDic[p0] = pointsToCheckDic[p0] + [inboundPoints]
+
+print("done precomputing")
+
 class GameState:
     Grid = [[[None for k in range(4)] for j in range(4)] for i in range(4)]    
     IsPlayerZeroTurn = True
@@ -23,7 +42,16 @@ class GameState:
     def checkEnd(self) -> bool : 
         return self.getWinner() is not None or self.MoveCount == 64
     
+
     def getWinner(self) -> int:
+        if self.LastMove is None :
+            return None
+        p = self.LastMove
+        lastMoveValue = self.Grid[p[0]][p[1]][p[2]]
+        if any( all(V == lastMoveValue for V in [self.Grid[x][y][z] for (x,y,z) in inboundPoints]) for inboundPoints in pointsToCheckDic[p]) :
+            return lastMoveValue
+
+    def getWinnerAutoCompute(self) -> int:
         if self.LastMove is None :
             return None
         for vf, vb in zip(half_vectors, mirror_vectors):
