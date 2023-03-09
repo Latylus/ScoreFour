@@ -26,7 +26,7 @@ for x,y,z in [(x,y,z) for x in range(SIZE) for y in range(SIZE) for z in range(S
         for i in range(WIN_SIZE):
             pointList = bPointList[:WIN_SIZE - i]+[p0]+fPointList[:i]
             inboundPoints = [p for p in pointList if all(c>=0 and c<SIZE for c in p)]
-            if len(inboundPoints) >= WIN_SIZE :
+            if len(inboundPoints) == WIN_SIZE :
                 pointsToCheckDic[p0] = pointsToCheckDic[p0] + [inboundPoints]
 
 class GameState:
