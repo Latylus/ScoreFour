@@ -6,7 +6,7 @@ from tqdm import tqdm
 player0 = PlayerRandom()
 player1 = PlayerRandom()
 
-n = 500
+n = 5000
 gameLengths = [None] * n
 
 for i in tqdm(range(n)):
