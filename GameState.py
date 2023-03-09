@@ -14,16 +14,20 @@ for x,y,z in [(x,y,z) for x in range(SIZE) for y in range(SIZE) for z in range(S
     p0 = (x,y,z)
     pointsToCheckDic[p0] = []
     for vf, vb in zip(half_vectors, mirror_vectors):
-        pointList = [p0]
         lastF = p0
         lastB= p0
+        fPointList = []
+        bPointList = []
         for _ in range(WIN_SIZE-1):
             lastF = tuple(map(sum, zip(lastF, vf)))
             lastB = tuple(map(sum, zip(lastB, vb)))
-            pointList += [lastF, lastB]
-        inboundPoints = [p for p in pointList if all(c>=0 and c<SIZE for c in p)]
-        if len(inboundPoints) >= WIN_SIZE :
-            pointsToCheckDic[p0] = pointsToCheckDic[p0] + [inboundPoints]
+            fPointList += [lastF]
+            bPointList += [lastB]
+        for i in range(WIN_SIZE):
+            pointList = bPointList[:WIN_SIZE - i]+[p0]+fPointList[:i]
+            inboundPoints = [p for p in pointList if all(c>=0 and c<SIZE for c in p)]
+            if len(inboundPoints) >= WIN_SIZE :
+                pointsToCheckDic[p0] = pointsToCheckDic[p0] + [inboundPoints]
 
 class GameState:
     Grid = [] # Grid[x][y][z] is None if contains no peg, else 0 or 1 corresponding to the player number
