@@ -8,11 +8,11 @@ player1 = PlayerRandom()
 # use PlayerAI for your own implementation (for player0 or player1)
 #player1 = PlayerAI()
 
-n = 5000
-gameLengths = [None] * n
-winners = [None] * n
+numberOfGames = 5000
+gameLengths = [None] * numberOfGames
+winners = [None] * numberOfGames
 
-for i in range(n):
+for i in range(numberOfGames):
     game = Game(player0= player0, player1= player1, isVerbose= False, gameState=GameState())
     game.run()
     #basic statistic collection on the game once it's ended
